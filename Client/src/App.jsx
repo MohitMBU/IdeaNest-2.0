@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Community from './pages/Community'
 import ProtectedRoute from './components/protected-route'
 import RoleSelection from './pages/RoleSelection'
+import IdeaListing from './pages/ideaListing'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Community />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/ideas',
+        element: (
+          <ProtectedRoute>
+            <IdeaListing />
           </ProtectedRoute>
         )
       }
