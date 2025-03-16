@@ -3,7 +3,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import connectDB from "./config/db.js";
-
+import { requireAuth } from "@clerk/express";
+import userRoutes from "./routes/userRoutes.js";
 import ideaRoutes from "./routes/ideas.js";
 
 dotenv.config()
@@ -21,6 +22,7 @@ app.use(cookieParser())
 
 connectDB();
 
+app.use("/api/users", requireAuth(), userRoutes);
 app.use("/api/ideas", ideaRoutes);
 
 const PORT = process.env.PORT || 3000;
