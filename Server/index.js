@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import { requireAuth } from "@clerk/express";
 import userRoutes from "./routes/userRoutes.js";
 import ideaRoutes from "./routes/ideas.js";
+import projectRoutes from './routes/projects.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ connectDB();
 
 app.use("/api/users", requireAuth(), userRoutes);
 app.use("/api/ideas", ideaRoutes);
+app.use("/api/projects", projectRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

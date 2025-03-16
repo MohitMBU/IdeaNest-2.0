@@ -92,6 +92,7 @@ const ShowIdeas = () => {
               <div
                 key={idea._id}
                 className='bg-white shadow-lg rounded-lg overflow-hidden border transition hover:shadow-2xl relative'
+                onClick={() => navigate(`/ideas/${idea._id}`)}
               >
                 {/* Media Carousel */}
                 {mediaFiles.length > 0 ? (

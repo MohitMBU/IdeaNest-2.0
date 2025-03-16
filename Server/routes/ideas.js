@@ -50,13 +50,27 @@ router.post('/', upload.array('media', 5), async (req, res) => {
 // Get all ideas
 router.get('/', async (req, res) => {
   try {
-    const ideas = await Idea.find()
+    const ideas = await Idea.find({ approved: false })
     res.json({ success: true, ideas })
   } catch (error) {
     console.error('Error fetching ideas:', error)
     res.status(500).json({ success: false, message: 'Server Error' })
   }
 })
+
+// Fetch Single Idea by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const idea = await Idea.findById(req.params.id);
+    if (!idea) {
+      return res.status(404).json({ success: false, message: 'Idea not found' });
+    }
+    res.json({ success: true, idea });
+  } catch (error) {
+    console.error('Error fetching idea:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 router.get('/my-ideas', async (req, res) => {
   try {
@@ -67,5 +81,24 @@ router.get('/my-ideas', async (req, res) => {
     res.status(500).send('Error in user report');
   }
 });
+
+router.put("/:id/approve", async (req, res) => {
+  try {
+    const ideaId = req.params.id;
+    const idea = await Idea.findById(ideaId);
+
+    if (!idea) {
+      return res.status(404).json({ success: false, message: "Idea not found" });
+    }
+
+    idea.approved = true;
+    await idea.save();
+
+    res.json({ success: true, message: "Idea approved and moved to projects!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error approving idea", error });
+  }
+});
+
 
 export default router

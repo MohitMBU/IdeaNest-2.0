@@ -46,7 +46,7 @@ function Header () {
           </SignedOut>
           <SignedIn>
             {user?.unsafeMetadata?.role === 'student' && (
-              <Link to='/create-post'>
+              <Link to='/create-idea'>
                 <Button variant='destructive' className='rounded-full'>
                   <PenBox size={20} className='mr-2' />
                   Create Idea
