@@ -1,18 +1,18 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ThemeProvider } from './components/theme-provider'
-import AppLayout from './layout/AppLayout'
-import LandingPage from './pages/LandingPage'
-import Home from './pages/Home'
-import Community from './pages/Community'
-import ProtectedRoute from './components/protected-route'
-import RoleSelection from './pages/RoleSelection'
-import IdeaListing from './pages/ideaListing'
-import CreateIdea from './pages/CreateIdea'
-import ShowIdeas from './pages/ShowIdeas'
-import MyPosts from './pages/MyPosts'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ThemeProvider } from "./components/theme-provider";
+import AppLayout from "./layout/AppLayout";
+import LandingPage from "./pages/LandingPage";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/protected-route";
+import RoleSelection from "./pages/RoleSelection";
+// import IdeaListing from "./pages/ideaListing";
+import CreateIdea from "./pages/CreateIdea";
+import ShowIdeas from "./pages/ShowIdeas";
+import MyPosts from "./pages/MyPosts";
 import IdeaDetails from './pages/IdeaDetails'
 import ProjectSection from './pages/ProjectSection'
 import SyncUser from "./auth/SyncUser.jsx";
+import CommunityChat from "./pages/CommunityChat.jsx";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +48,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/community-chat",
+        element: (
+          <ProtectedRoute>
+            <CommunityChat />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/ideas",
         element: (
           <ProtectedRoute>
@@ -64,18 +72,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/community",
+        path: '/ideas/:id',
         element: (
           <ProtectedRoute>
-            <Community />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/ideas",
-        element: (
-          <ProtectedRoute>
-            <IdeaListing />
+            <IdeaDetails />
           </ProtectedRoute>
         )
       },
