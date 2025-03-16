@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import AppLayout from "./layout/AppLayout";
 import LandingPage from "./pages/LandingPage";
-import Home from "./pages/Home";
+import Home from "./pages/home/Home";
 import ProtectedRoute from "./components/protected-route";
 import RoleSelection from "./pages/RoleSelection";
 // import IdeaListing from "./pages/ideaListing";
