@@ -12,9 +12,9 @@ router.post('/', upload.array('media', 5), async (req, res) => {
         .json({ success: false, message: 'No media files uploaded' })
     }
 
-    const { title, description, category, techStacks, userObject } = req.body
+    const { title, description, problemStatement, category, technology,referenceLinks, userObject } = req.body
 
-    if (!title || !description || !category || !techStacks || !userObject) {
+    if (!title || !description || !problemStatement || !category || !userObject) {
       return res
         .status(400)
         .json({ success: false, message: 'All fields are required' })
@@ -27,7 +27,9 @@ router.post('/', upload.array('media', 5), async (req, res) => {
       media: mediaUrls,
       description,
       category,
-      techStacks: techStacks.split(','),
+      problemStatement,
+      technology:  technology.split(','),
+      referenceLinks,
       userObject
     })
 

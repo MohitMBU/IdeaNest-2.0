@@ -22,9 +22,11 @@ const CreateIdea = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
+    problemStatement: "",
     description: "",
     category: "",
-    techStacks: "",
+    technology: "",
+    referenceLinks: "",
     media: [],
   });
 
@@ -47,9 +49,9 @@ const CreateIdea = () => {
     // **Validation Check**
     if (
       !formData.title ||
+      !formData.problemStatement ||
       !formData.description ||
       !formData.category || // Now properly set
-      !formData.techStacks ||
       formData.media.length === 0
     ) {
       alert("All fields are required. Please fill out everything.");
@@ -58,9 +60,11 @@ const CreateIdea = () => {
 
     const data = new FormData();
     data.append("title", formData.title);
+    data.append("problemStatement", formData.problemStatement);
     data.append("description", formData.description);
     data.append("category", formData.category);
-    data.append("techStacks", formData.techStacks);
+    data.append("technology", formData.technology);
+    data.append("referenceLinks", formData.referenceLinks);
     // ✅ Use Clerk user ID dynamically
   if (user) {
     data.append("userObject", user.id);
@@ -108,10 +112,19 @@ const CreateIdea = () => {
         className="block w-full mb-3 p-3 border rounded-lg"
       />
 
-      {/* Description */}
+      {/* Problem Statement */}
       <textarea
         name="description"
-        placeholder="Description"
+        placeholder="Describe your idea.."
+        onChange={handleChange}
+        required
+        className="block w-full mb-3 p-3 border rounded-lg"
+      ></textarea>
+
+      {/* Description */}
+      <textarea
+        name="problemStatement"
+        placeholder="Problem Statement (What issue does it solve?)"
         onChange={handleChange}
         required
         className="block w-full mb-3 p-3 border rounded-lg"
@@ -140,10 +153,18 @@ const CreateIdea = () => {
       {/* Tech Stacks */}
       <input
         type="text"
-        name="techStacks"
-        placeholder="Tech Stacks (comma-separated)"
+        name="technology"
+        placeholder="Technology (comma-separated)"
         onChange={handleChange}
-        required
+        className="block w-full mb-3 p-3 border rounded-lg"
+      />
+
+            {/* Reference links */}
+            <input
+        type="text"
+        name="referenceLinks"
+        placeholder="Any reference links.."
+        onChange={handleChange}
         className="block w-full mb-3 p-3 border rounded-lg"
       />
 
@@ -153,7 +174,6 @@ const CreateIdea = () => {
         name="media"
         multiple
         onChange={handleFileChange}
-        required
         className="block w-full mb-3 p-3 border rounded-lg"
       />
 

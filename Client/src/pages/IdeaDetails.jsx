@@ -139,14 +139,17 @@ const IdeaDetails = () => {
 
       {/* Additional Details */}
       <div className='mt-4'>
+      <p>
+          <strong>Problem Statement:</strong> {idea.problemStatement}
+        </p>
         <p>
           <strong>Category:</strong> {idea.category}
         </p>
         <p>
-          <strong>Tech Stacks:</strong> {idea.techStacks || 'N/A'}
+          <strong>Links:</strong> {idea.referenceLinks}
         </p>
-        <p className='text-sm text-gray-500'>
-          <strong>Submitted By:</strong> {idea.userObject || 'Unknown'}
+        <p>
+          <strong>Technology:</strong> {idea.technology || 'N/A'}
         </p>
       </div>
     </div>

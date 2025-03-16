@@ -165,7 +165,9 @@ const ShowIdeas = () => {
                   <h3 className='text-xl font-semibold text-gray-800'>
                     {idea.title}
                   </h3>
-                  <p className='text-gray-600 mt-2'>{idea.description}</p>
+                  <p className='text-gray-600 mt-2 '><b>Description :</b> {idea.description}</p>
+                  <p className='text-gray-600 mt-2'><b>Problem Statemment : </b>{idea.problemStatement}</p>
+                  <p className='text-gray-600 mt-2'><b>Links :</b> {idea.referenceLinks}</p>
 
                   {/* Category */}
                   <span className='inline-block mt-3 text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-600'>
@@ -175,18 +177,19 @@ const ShowIdeas = () => {
                   {/* Tech Stacks */}
                   <div className='mt-3'>
                     <p className='text-sm font-medium text-gray-700'>
-                      Tech Stacks:
+                      Technology:
                     </p>
                     <p className='text-gray-800 font-semibold'>
-                      {idea.techStacks || 'N/A'}
+                      {idea.technology || 'N/A'}
                     </p>
                   </div>
+                  
 
-                  {/* User Object (If Needed) */}
+                  {/* User Object (If Needed)
                   <div className='mt-3 text-sm text-gray-500'>
                     <strong>Submitted By:</strong>{' '}
-                    {idea.userObject || 'Unknown'}
-                  </div>
+                    {idea.userObject.name || 'Unknown'}
+                  </div> */}
                 </div>
               </div>
             )
