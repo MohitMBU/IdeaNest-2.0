@@ -13,6 +13,7 @@ import IdeaDetails from './pages/IdeaDetails'
 import ProjectSection from './pages/ProjectSection'
 import SyncUser from "./auth/SyncUser.jsx";
 import CommunityChat from "./pages/CommunityChat.jsx";
+import SearchPage from "./pages/SearchPage";
 
 const router = createBrowserRouter([
   {
@@ -80,18 +81,18 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/ideas/:id',
-        element: (
-          <ProtectedRoute>
-            <IdeaDetails />
-          </ProtectedRoute>
-        )
-      },
-      {
         path: '/projects',
         element: (
           <ProtectedRoute>
             <ProjectSection />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/search',
+        element: (
+          <ProtectedRoute>
+            <SearchPage />
           </ProtectedRoute>
         )
       }

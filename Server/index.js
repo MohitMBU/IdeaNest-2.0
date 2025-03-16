@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 connectDB();
 
-app.use('/api/users', requireAuth(), userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/ideas', ideaRoutes);
 app.use("/api/chat", requireAuth(), chatRouter);
 app.use('/api/projects', projectRouter)

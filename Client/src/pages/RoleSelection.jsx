@@ -9,15 +9,31 @@ function RoleSelection () {
   const navigate = useNavigate()
 
   const handleRoleSelection = async role => {
-    await user
-      .update({ unsafeMetadata: { role } })
-      .then(() => {
-        console.log(`Role updated to: ${role}`)
-        navigate('/home')
+    try {
+      await user.update({ unsafeMetadata: { role } })
+
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      await user.reload()
+
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clerkId: user.id,
+          name: user.fullName,
+          email: user.primaryEmailAddress,
+          role: user.unsafeMetadata.role,
+          avatar: user.imageUrl
+        })
       })
-      .catch(err => {
-        console.error('Error updating role:', err)
-      })
+
+      const data = await res.json()
+
+      navigate('/home')
+    } catch (err) {
+      console.error('❌ Error updating role:', err)
+    }
   }
 
   useEffect(() => {

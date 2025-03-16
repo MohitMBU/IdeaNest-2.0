@@ -12,13 +12,18 @@ const SyncUser = () => {
 
       try {
         const token = await getToken();
+        
+        // ✅ Fetch role from Clerk metadata
+        const role = user.unsafeMetadata.role || "user"; // Default to 'user' if undefined
+
         const userData = {
           clerkId: user.id,
           name: user.fullName,
           email: user.primaryEmailAddress?.emailAddress,
           avatar: user.imageUrl,
-          role: "user",
+          role,  // ✅ Send correct role (user OR mentor)
         };
+
         await axios.post(
           "http://localhost:3000/api/users",
           userData,
@@ -29,8 +34,10 @@ const SyncUser = () => {
             },
           }
         );
+
+        console.log("✅ User synced:", userData);
       } catch (error) {
-        console.error("Sync error:", error);
+        console.error("❌ Sync error:", error);
       }
     }
 

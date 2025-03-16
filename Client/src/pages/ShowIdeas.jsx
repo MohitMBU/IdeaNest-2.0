@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react'
 
 const ShowIdeas = () => {
+  const { user } = useUser()
   const navigate = useNavigate();
   const [ideas, setIdeas] = useState([])
   const [loading, setLoading] = useState(true)
@@ -70,12 +72,14 @@ const ShowIdeas = () => {
       {/* Title & Button Section */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">💡 Submitted Ideas</h2>
+        {user?.unsafeMetadata?.role === 'student' && (
         <Button
           className="bg-red-500"
           onClick={() => navigate('/create-idea')}
         >
           Create Idea
         </Button>
+        )}
       </div>
       {loading ? (
         <p className='text-center'>Loading ideas...</p>
