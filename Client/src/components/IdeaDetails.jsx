@@ -137,20 +137,56 @@ const IdeaDetails = () => {
         </div>
       )}
 
-      {/* Additional Details */}
-      <div className='mt-4'>
-      <p>
-          <strong>Problem Statement:</strong> {idea.problemStatement}
+      {/* Idea Details */}
+      <div className='p-5'>
+        <h3 className='text-xl font-semibold text-gray-800'>{idea.title}</h3>
+        <p className='text-gray-600 mt-2 '>
+          <b>Description :</b> {idea.description}
         </p>
-        <p>
-          <strong>Category:</strong> {idea.category}
+        <p className='text-gray-600 mt-2'>
+          <b>Problem Statement :</b> {idea.problemStatement}
         </p>
-        <p>
-          <strong>Links:</strong> {idea.referenceLinks}
+        <p className='text-gray-600 mt-2'>
+          <b>Links :</b> {idea.referenceLinks}
         </p>
-        <p>
-          <strong>Technology:</strong> {idea.technology || 'N/A'}
-        </p>
+
+        {/* Category */}
+        <span className='inline-block mt-3 text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-600'>
+          {idea.category}
+        </span>
+
+        {/* Tech Stacks */}
+        <div className='mt-3'>
+          <p className='text-sm font-medium text-gray-700'>Technology:</p>
+          <p className='text-gray-800 font-semibold'>
+            {idea.technology || 'N/A'}
+          </p>
+        </div>
+
+        {/* Feasibility Test Table */}
+        <div className='mt-4 p-4 border-t bg-gray-100'>
+          <h4 className='text-lg font-semibold text-gray-700 mb-2'>
+            Feasibility Test
+          </h4>
+          <table className='w-full border-collapse border border-gray-300'>
+            <thead>
+              <tr className='bg-gray-200'>
+                <th className='border p-2'>Title</th>
+                <th className='border p-2'>Feasibility Score</th>
+                <th className='border p-2'>AI Suggestions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className='text-center'>
+                <td className='border p-2'>{idea.title}</td>
+                <td className='border p-2'>{idea.feasibilityScore || 'N/A'}</td>
+                <td className='border p-2'>
+                  {idea.aiSuggestions || 'No suggestions'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

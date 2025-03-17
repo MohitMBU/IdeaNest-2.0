@@ -25,6 +25,7 @@ function NavBar() {
   useEffect(() => {
     if (search.get("sign-in")) {
       setShowSignIn(true);
+      document.body.style.backgroundColor = "black";
     }
   }, [search]);
 

@@ -1,32 +1,25 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useUser, useAuth } from "@clerk/clerk-react";
 
-const SyncUser = () => {
-  const { user, isLoaded } = useUser();
-  const { getToken } = useAuth();
+const SyncUser = ({ token }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function syncUser() {
-      if (!isLoaded || !user) return;
+    const syncUser = async () => {
+      if (!token) {
+        setError("No token provided");
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
 
       try {
-        const token = await getToken();
-        
-        // ✅ Fetch role from Clerk metadata
-        const role = user.unsafeMetadata.role || "user"; // Default to 'user' if undefined
-
-        const userData = {
-          clerkId: user.id,
-          name: user.fullName,
-          email: user.primaryEmailAddress?.emailAddress,
-          avatar: user.imageUrl,
-          role,  // ✅ Send correct role (user OR mentor)
-        };
-
-        await axios.post(
+        const response = await axios.post(
           "http://localhost:3000/api/users",
-          userData,
+          {},
           {
             headers: {
               "Content-Type": "application/json",
@@ -35,16 +28,22 @@ const SyncUser = () => {
           }
         );
 
-        console.log("✅ User synced:", userData);
-      } catch (error) {
-        console.error("❌ Sync error:", error);
+        if (response.status === 200) {
+          setUserData(response.data);
+          console.log("✅ User synced:", response.data);
+        } else {
+          throw new Error(`Unexpected response status: ${response.status}`);
+        }
+      } catch (err) {
+        console.error("❌ Sync error:", err);
+        setError(err.response?.data?.message || err.message);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
     syncUser();
-  }, [user, isLoaded, getToken]);
-
-  return null;
+  }, [token]);
 };
 
 export default SyncUser;

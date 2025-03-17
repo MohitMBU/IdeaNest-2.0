@@ -19,6 +19,8 @@ import SearchPage from "./pages/searchPage/SearchPage";
 import PageNotFound from "./pages/PageNotFound";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import ProfilePage from "./pages/Profile/ProfilePage";
+import MyProjects from "./pages/Profile/MyProjects";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +108,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <SearchPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin",
+        element: (
+          <ProtectedRoute>
+            <AdminDashboard />
           </ProtectedRoute>
         ),
       },

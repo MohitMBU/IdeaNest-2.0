@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import { useUser } from '@clerk/clerk-react'
 
 const Ideas = () => {
   const { user } = useUser()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [ideas, setIdeas] = useState([])
   const [loading, setLoading] = useState(true)
   const [mediaIndex, setMediaIndex] = useState({}) // Track the current media index per idea
@@ -70,15 +70,15 @@ const Ideas = () => {
   return (
     <div className='p-6 max-w-6xl mx-auto'>
       {/* Title & Button Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">💡 Submitted Ideas</h2>
+      <div className='flex justify-between items-center mb-6'>
+        <h2 className='text-3xl font-bold text-gray-800'>💡 Submitted Ideas</h2>
         {user?.unsafeMetadata?.role === 'student' && (
-        <Button
-          className="bg-red-500"
-          onClick={() => navigate('/create-idea')}
-        >
-          Create Idea
-        </Button>
+          <Button
+            className='bg-red-500'
+            onClick={() => navigate('/create-idea')}
+          >
+            Create Idea
+          </Button>
         )}
       </div>
       {loading ? (
@@ -165,9 +165,15 @@ const Ideas = () => {
                   <h3 className='text-xl font-semibold text-gray-800'>
                     {idea.title}
                   </h3>
-                  <p className='text-gray-600 mt-2 '><b>Description :</b> {idea.description}</p>
-                  <p className='text-gray-600 mt-2'><b>Problem Statemment : </b>{idea.problemStatement}</p>
-                  <p className='text-gray-600 mt-2'><b>Links :</b> {idea.referenceLinks}</p>
+                  <p className='text-gray-600 mt-2 '>
+                    <b>Description :</b> {idea.description}
+                  </p>
+                  <p className='text-gray-600 mt-2'>
+                    <b>Problem Statement :</b> {idea.problemStatement}
+                  </p>
+                  <p className='text-gray-600 mt-2'>
+                    <b>Links :</b> {idea.referenceLinks}
+                  </p>
 
                   {/* Category */}
                   <span className='inline-block mt-3 text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-600'>
@@ -183,13 +189,7 @@ const Ideas = () => {
                       {idea.technology || 'N/A'}
                     </p>
                   </div>
-                  
-
-                  {/* User Object (If Needed)
-                  <div className='mt-3 text-sm text-gray-500'>
-                    <strong>Submitted By:</strong>{' '}
-                    {idea.userObject.name || 'Unknown'}
-                  </div> */}
+                  <Button>Click here for Ai feasibility analysis -</Button>
                 </div>
               </div>
             )

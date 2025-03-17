@@ -20,12 +20,8 @@ const IdeaSchema = new mongoose.Schema(
       }
     },
     approved: { type: Boolean, default: false },
-    aiFeasibilityScore: { 
-      type: Number, 
-      min: 0, 
-      max: 100, 
-      default: null 
-    }, // AI-generated feasibility score (0-100)
+    feasibilityScore: { type: String, enum: ["Low", "Medium", "High"], default: "Medium" },
+    aiSuggestions: { type: String },
     userObject: { type: String, required: true }, 
   },
   { timestamps: true }
