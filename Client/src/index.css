@@ -114,8 +114,10 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    font-family: "Poppins";
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #fffcef !important;
   }
 }

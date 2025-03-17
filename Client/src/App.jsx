@@ -1,28 +1,41 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import AppLayout from "./layout/AppLayout";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/home/Home";
 import ProtectedRoute from "./components/protected-route";
 import RoleSelection from "./pages/RoleSelection";
-// import IdeaListing from "./pages/ideaListing";
-import CreateIdea from "./pages/CreateIdea";
-import ShowIdeas from "./pages/ShowIdeas";
-import MyPosts from "./pages/MyPosts";
-import IdeaDetails from './pages/IdeaDetails'
-import ProjectSection from './pages/ProjectSection'
+import CreateIdea from "./pages/home/subpages/CreateIdea";
+import Ideas from "./pages/home/subpages/Ideas";
+import IdeaDetails from "./components/IdeaDetails";
+import ProjectSection from "./pages/home/subpages/Projects";
 import SyncUser from "./auth/SyncUser.jsx";
-import CommunityChat from "./pages/CommunityChat.jsx";
-import SearchPage from "./pages/SearchPage";
+import Community from "./pages/Community/Community.jsx";
+import SearchPage from "./pages/searchPage/SearchPage";
+import PageNotFound from "./pages/PageNotFound";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import ProfilePage from "./pages/Profile/ProfilePage";
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
-
     children: [
       {
         path: "/",
-        element: <LandingPage />,
+        element: (
+          <>
+            <SignedIn>
+              <Navigate to="/home" />
+            </SignedIn>
+            <SignedOut>
+              <LandingPage />
+            </SignedOut>
+          </>
+        ),
       },
       {
         path: "/select-role",
@@ -49,10 +62,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/community-chat",
+        path: "/community",
         element: (
           <ProtectedRoute>
-            <CommunityChat />
+            <Community />
           </ProtectedRoute>
         ),
       },
@@ -60,51 +73,56 @@ const router = createBrowserRouter([
         path: "/ideas",
         element: (
           <ProtectedRoute>
-            <ShowIdeas />
+            <Ideas />
           </ProtectedRoute>
         ),
       },
       {
-        path: "/my-posts",
+        path: "/profile/*",
         element: (
           <ProtectedRoute>
-            <MyPosts />
+            <ProfilePage />
           </ProtectedRoute>
         ),
       },
       {
-        path: '/ideas/:id',
+        path: "/ideas/:id",
         element: (
           <ProtectedRoute>
             <IdeaDetails />
           </ProtectedRoute>
-        )
+        ),
       },
       {
-        path: '/projects',
+        path: "/projects",
         element: (
           <ProtectedRoute>
             <ProjectSection />
           </ProtectedRoute>
-        )
+        ),
       },
       {
-        path: '/search',
+        path: "/search",
         element: (
           <ProtectedRoute>
             <SearchPage />
           </ProtectedRoute>
-        )
-      }
-    ]
-  }
-])
-    
+        ),
+      },
+      {
+        path: "*", // Wildcard route for 404 page
+        element: <PageNotFound />,
+      },
+    ],
+  },
+]);
 
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <SyncUser />
+      <SignedIn>
+        <SyncUser />
+      </SignedIn>
       <RouterProvider router={router} />
     </ThemeProvider>
   );
