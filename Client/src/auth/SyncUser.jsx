@@ -17,7 +17,7 @@ const SyncUser = () => {
           name: user.fullName,
           email: user.primaryEmailAddress?.emailAddress,
           avatar: user.imageUrl,
-          role: "user",
+          role: user?.unsafeMetadata?.role,
         };
         await axios.post(
           "http://localhost:3000/api/users",
