@@ -21,10 +21,10 @@ const Ideas = () => {
             const tech = idea.technology || idea.techStack
             return {
               id: idea._id,
-              icon: idea.icon || "💡",
+              icon: idea.icon || '💡',
               name: idea.title,
-              techStack: Array.isArray(tech) ? tech.join(", ") : tech,
-              category: idea.category,
+              techStack: Array.isArray(tech) ? tech.join(', ') : tech,
+              category: idea.category
             }
           })
           setIdeas(formattedIdeas)
@@ -41,20 +41,22 @@ const Ideas = () => {
   }, [])
 
   return (
-    <div className="p-6 mx-10 md:mx-[10%]">
-       <h1
-  className='text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-blue-700 to-purple-800 mb-10 text-center cursor-pointer transition-all hover:scale-105 hover:from-gray-700 hover:via-blue-600 hover:to-purple-700'
-  onClick={() => navigate('/admin')}
->
-  🚀 Admin Dashboard
-</h1>
+    <div className='p-6 mx-10 md:mx-[10%]'>
+      {user?.unsafeMetadata?.role === 'admin' && (
+        <h1
+          className='text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-blue-700 to-purple-800 mb-10 text-center cursor-pointer transition-all hover:scale-105 hover:from-gray-700 hover:via-blue-600 hover:to-purple-700'
+          onClick={() => navigate('/admin')}
+        >
+          🚀 Admin Dashboard
+        </h1>
+      )}
 
       {/* Title & Button Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">💡 Submitted Ideas</h2>
+      <div className='flex justify-between items-center mb-6'>
+        <h2 className='text-3xl font-bold text-gray-800'>💡 Submitted Ideas</h2>
         {user?.unsafeMetadata?.role === 'student' && (
           <Button
-            className="bg-yellow-200 border border-yellow-600"
+            className='bg-yellow-200 border border-yellow-600'
             onClick={() => navigate('/create-idea')}
           >
             Create Idea
@@ -62,16 +64,16 @@ const Ideas = () => {
         )}
       </div>
       {loading ? (
-        <p className="text-center">Loading ideas...</p>
+        <p className='text-center'>Loading ideas...</p>
       ) : ideas.length === 0 ? (
-        <p className="text-center text-gray-500">No ideas found.</p>
+        <p className='text-center text-gray-500'>No ideas found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {ideas.map(idea => (
             <div
               key={idea.id}
-              onClick={() => navigate(`/admin/ideas/${idea.id}`)}
-              className="cursor-pointer"
+              onClick={() => navigate(`/ideas/${idea.id}`)}
+              className='cursor-pointer'
             >
               <IconCard
                 icon={idea.icon}

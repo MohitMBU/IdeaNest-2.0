@@ -198,17 +198,17 @@ export default function Home () {
             seeAllLink='/projects'
           />
         )}
-        {/* <div className="border-b border-black/20"></div>
+        <div className="border-b border-black/20"></div>
         {loadingIdeas ? (
           <p className="text-center">Loading ideas...</p>
         ) : (
           <Section
-            title="Ideas"
+            title="Approved Ideas"
             items={ideas}
             CardComponent={IconCard}
             seeAllLink="/ideas"
           />
-        )} */}
+        )}
         <div className='border-b border-black/20'></div>
         <Section
           title='Events'

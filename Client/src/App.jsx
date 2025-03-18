@@ -77,10 +77,18 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/admin/user-ideas",
+        path: "/ideas",
         element: (
           <ProtectedRoute>
             <Ideas />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ideas/:id",
+        element: (
+          <ProtectedRoute>
+            <IdeaDetails />
           </ProtectedRoute>
         ),
       },
@@ -93,7 +101,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/admin/ideas/:id",
+        path: "/ideas/:id",
         element: (
           <ProtectedRoute>
             <IdeaDetails />
