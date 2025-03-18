@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconCard from "./IconCard.jsx";
 import EventsCard from "./EventsCard.jsx";
 import { Lightbulb, GalleryVerticalEnd, Dock, ArrowRight } from "lucide-react";
@@ -23,6 +23,7 @@ const SeeAllCard = ({ route }) => (
 );
 
 const Section = ({ title, items, CardComponent, seeAllLink }) => {
+  const navigate = useNavigate();
   const displayedItems = items.slice(0, 5);
 
   return (
@@ -41,7 +42,15 @@ const Section = ({ title, items, CardComponent, seeAllLink }) => {
         <div className="overflow-x-auto">
           <div className="flex flex-nowrap gap-6">
             {displayedItems.map((item) => (
-              <CardComponent key={item.id} {...item} />
+              // Using display: contents ensures that the wrapping element doesn't affect the card layout/height.
+              <div
+                key={item.id}
+                onClick={() => navigate(`${seeAllLink}/${item.id}`)}
+                className="cursor-pointer"
+                style={{ display: "contents" }}
+              >
+                <CardComponent {...item} />
+              </div>
             ))}
             <SeeAllCard route={seeAllLink} />
           </div>
@@ -118,7 +127,6 @@ export default function Home() {
         const response = await fetch("http://localhost:3000/api/ideas");
         const data = await response.json();
         if (data.success) {
-          // Format each idea with only the required fields and ensure techStack is a string
           const formattedIdeas = data.ideas.map((idea) => {
             const tech = idea.technology || idea.techStack;
             return {

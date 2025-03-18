@@ -13,6 +13,7 @@ import CreateIdea from "./pages/home/subpages/CreateIdea";
 import Ideas from "./pages/home/subpages/Ideas";
 import IdeaDetails from "./components/IdeaDetails";
 import ProjectSection from "./pages/home/subpages/Projects";
+import ProjectDetails from "./components/ProjectDetails";
 import SyncUser from "./auth/SyncUser.jsx";
 import Community from "./pages/Community/Community.jsx";
 import SearchPage from "./pages/searchPage/SearchPage";
@@ -100,6 +101,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ProjectSection />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/projects/:id",
+        element: (
+          <ProtectedRoute>
+            <ProjectDetails />
           </ProtectedRoute>
         ),
       },

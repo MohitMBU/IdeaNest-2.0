@@ -13,10 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const LandingPage = () => {
   return (
     <>
-      <main className="font-sans text-gray-800 bg-[#FFFCEF] ">
-        {/* Hero Section */}
+      {/* <main className="font-sans text-gray-800 bg-[#FFFCEF] ">
         <section className="relative flex flex-col md:flex-row items-start justify-between py-12 md:py-20 mx-[10%] h-[90vh]">
-          {/* LEFT SIDE*/}
           <div className="md:w-1/2 space-y-8 md:my-auto">
             <h1 className="text-4xl md:text-[6vw] font-semibold leading-tight">
               Collaborate, Innovate, Create
@@ -32,7 +30,6 @@ const LandingPage = () => {
               </Button>
             </Link>
 
-            {/* Integration card (like in the screenshot) */}
             <div className="flex h-auto w-auto gap-4 mt-12 ">
               <img
                 src="/illustrations/teamWorkIllustration.webp"
@@ -50,9 +47,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* RIGHT SIDE*/}
           <div className="md:w-1/2 relative mt-10 md:mt-0 flex-1 md:h-full w-full">
-            {/* Thin vertical line from top to bottom */}
             <div className="absolute top-0 bottom-0 !left-18 md:left-12 w-[1px] bg-yellow-500" />
 
             <div className="absolute top-[24%] left-6 md:left-12 w-40 h-40 rounded-lg overflow-hidden border border-yellow-500 bg-gray-200 shadow-lg">
@@ -80,7 +75,6 @@ const LandingPage = () => {
               </video>
             </div>
 
-            {/* 20k Businesses text at the bottom */}
             <div className="absolute bottom-0 right-6 md:right-12 w-40 bg-white p-3 rounded-md shadow-md ">
               <h3 className="text-2xl font-bold">20k</h3>
               <p className="text-sm text-gray-500">
@@ -100,7 +94,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* For Students & Mentors Section */}
         <section className="max-w-[1200px] mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-6 bg-white shadow-sm rounded-xl">
             <h1 className="font-bold text-xl mb-2">For Students</h1>
@@ -118,7 +111,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* FAQ Section */}
         <section className="max-w-[1200px] mx-auto px-6 pb-12">
           <Accordion type="multiple" className="w-full">
             {faqs.map((faq, index) => (
@@ -129,8 +121,8 @@ const LandingPage = () => {
             ))}
           </Accordion>
         </section>
-      </main>
-      {/* <main className="flex flex-col gap-10 sm:gap-20 py-10 sm:py-20">
+      </main> */}
+      <main className="flex flex-col gap-10 sm:gap-20 py-10 sm:py-20">
         <section className="text-center ">
           <h1 className="flex flex-col items-center justify-center gradient-title font-extrabold text-4xl sm:text-6xl lg:text-8xl tracking-tighter py-4">
             Make your Imagination
@@ -180,7 +172,7 @@ const LandingPage = () => {
             </AccordionItem>
           ))}
         </Accordion>
-      </main> */}
+      </main>
     </>
   );
 };
