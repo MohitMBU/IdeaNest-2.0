@@ -10,7 +10,7 @@ import Home from "./pages/home/Home";
 import ProtectedRoute from "./components/protected-route";
 import RoleSelection from "./pages/RoleSelection";
 import CreateIdea from "./pages/home/subpages/CreateIdea";
-import Ideas from "./pages/home/subpages/Ideas";
+import Ideas from "./pages/admin/Ideas";
 import IdeaDetails from "./components/IdeaDetails";
 import ProjectSection from "./pages/home/subpages/Projects";
 import ProjectDetails from "./components/ProjectDetails";
@@ -20,8 +20,12 @@ import SearchPage from "./pages/searchPage/SearchPage";
 import PageNotFound from "./pages/PageNotFound";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import ProfilePage from "./pages/Profile/ProfilePage";
-import MyProjects from "./pages/Profile/MyProjects";
+// import MyProjects from "./pages/Profile/MyProjects";
 import AdminDashboard from "./pages/AdminDashboard";
+import Unauthorized from "./components/Unauthorized";
+import Users from "./pages/admin/Users";
+import Main from "./pages/AI-Mentor/components/Main/Main";
+import ChatBot from "./pages/AI-Mentor/ChatBot";
 
 const router = createBrowserRouter([
   {
@@ -73,7 +77,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/ideas",
+        path: "/admin/user-ideas",
         element: (
           <ProtectedRoute>
             <Ideas />
@@ -89,7 +93,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/ideas/:id",
+        path: "/admin/ideas/:id",
         element: (
           <ProtectedRoute>
             <IdeaDetails />
@@ -98,6 +102,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/projects",
+        element: (
+          <ProtectedRoute>
+            <ProjectSection />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/projects",
         element: (
           <ProtectedRoute>
             <ProjectSection />
@@ -126,6 +138,36 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <AdminDashboard />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/users",
+        element: (
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ai-mentor",
+        element: (
+          <ProtectedRoute>
+            <Main />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ask-ai",
+        element: (
+          <ProtectedRoute>
+            <ChatBot />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/unauthorized",
+        element: (
+            <Unauthorized />
         ),
       },
       {

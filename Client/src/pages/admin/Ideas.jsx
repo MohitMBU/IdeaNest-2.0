@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '@clerk/clerk-react'
-import IconCard from '../IconCard.jsx'
+import IconCard from '../home/IconCard.jsx'
 
 const Ideas = () => {
   const { user } = useUser()
@@ -42,6 +42,13 @@ const Ideas = () => {
 
   return (
     <div className="p-6 mx-10 md:mx-[10%]">
+       <h1
+  className='text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-blue-700 to-purple-800 mb-10 text-center cursor-pointer transition-all hover:scale-105 hover:from-gray-700 hover:via-blue-600 hover:to-purple-700'
+  onClick={() => navigate('/admin')}
+>
+  🚀 Admin Dashboard
+</h1>
+
       {/* Title & Button Section */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">💡 Submitted Ideas</h2>
@@ -63,7 +70,7 @@ const Ideas = () => {
           {ideas.map(idea => (
             <div
               key={idea.id}
-              onClick={() => navigate(`/ideas/${idea.id}`)}
+              onClick={() => navigate(`/admin/ideas/${idea.id}`)}
               className="cursor-pointer"
             >
               <IconCard

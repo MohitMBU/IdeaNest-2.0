@@ -37,6 +37,15 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+    --bg-primary: #dfddec;
+    --bg-sec: #edecf2;
+    --bg-ter: #ffffff;
+    --txt: #1f2937;
+    --txt-dim: #525f70;
+    --txt-disabled: #888888;
+    --radius: 0.5rem;
+    --btn: #7f23ca;
+    --btn-hover: #8f30de;
 }
 
 .dark {
@@ -111,13 +120,36 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+  /* classes for ease of use */
+  .bg-primary { background-color: var(--bg-primary)!important;}
+  .bg-sec { background-color: var(--bg-sec); }
+  .bg-ter { background-color: var(--bg-ter); }
+  .txt { color: var(--txt); }
+  .txt-dim { color: var(--txt-dim); }
+  .txt-disabled { color: var(--txt-disabled)!important;}
+  .btn { background-color: var(--btn);color:white; border-radius: var(--radius); 
+    &:hover { background-color: var(--btn-hover); }
+  }
+
+  .board-cell {
+    @apply w-24 h-24 border-2 border-purple-500 flex items-center justify-center text-4xl font-bold cursor-pointer transition-all duration-200 bg-gray-800;
+  }
+  
+  .board-cell:hover {
+    @apply bg-gray-700;
+  }
+  
+  .winning-cell {
+    @apply bg-purple-900;
+  }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
     font-family: "Poppins";
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-200;
     background-color: #fffcef !important;
   }
 }

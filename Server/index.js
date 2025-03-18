@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes.js';
 import ideaRoutes from './routes/ideas.js';
 import chatRouter from "./routes/chatRoutes.js";
 import projectRouter from './routes/projects.js'
+import adminRouter from './routes/admin.js'
 
 // Import your models (adjust the paths based on your project structure)
 import User from './models/User.js';
@@ -34,6 +35,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/ideas', ideaRoutes);
 app.use("/api/chat", requireAuth(), chatRouter);
 app.use('/api/projects', projectRouter)
+app.use('/api/admin', adminRouter)
 
 // Create the HTTP server from the Express app
 const server = createServer(app);

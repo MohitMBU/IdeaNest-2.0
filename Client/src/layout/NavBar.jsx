@@ -15,12 +15,14 @@ import {
   UserButton,
   useUser,
 } from "@clerk/clerk-react";
+import ChatBot from "@/pages/AI-Mentor/ChatBot";
 
 function NavBar() {
   const { user } = useUser();
   const [showSignIn, setShowSignIn] = useState(false);
   const [search, setSearch] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedId, setSelectedId] = useState("");
 
   useEffect(() => {
     if (search.get("sign-in")) {
@@ -77,6 +79,7 @@ function NavBar() {
           </NavLink>
         </div>
         <div className="flex gap-4 mt-4 md:mt-0 items-center">
+        <ChatBot onShowId={setSelectedId} />
           <form
             onSubmit={handleSearchSubmit}
             className="flex rounded-full border p-0.5 border-black"

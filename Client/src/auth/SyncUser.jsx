@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
+import { useUser, useAuth } from "@clerk/clerk-react";
 
-const SyncUser = ({ token }) => {
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+const SyncUser = () => {
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
 
   useEffect(() => {
-    const syncUser = async () => {
-      if (!token) {
-        setError("No token provided");
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
+    async function syncUser() {
+      if (!isLoaded || !user) return;
 
       try {
-        const response = await axios.post(
+        const token = await getToken();
+        const userData = {
+          clerkId: user.id,
+          name: user.fullName,
+          email: user.primaryEmailAddress?.emailAddress,
+          avatar: user.imageUrl,
+          role: "user",
+        };
+        await axios.post(
           "http://localhost:3000/api/users",
-          {},
+          userData,
           {
             headers: {
               "Content-Type": "application/json",
@@ -27,23 +29,15 @@ const SyncUser = ({ token }) => {
             },
           }
         );
-
-        if (response.status === 200) {
-          setUserData(response.data);
-          console.log("✅ User synced:", response.data);
-        } else {
-          throw new Error(`Unexpected response status: ${response.status}`);
-        }
-      } catch (err) {
-        console.error("❌ Sync error:", err);
-        setError(err.response?.data?.message || err.message);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Sync error:", error);
       }
-    };
+    }
 
     syncUser();
-  }, [token]);
+  }, [user, isLoaded, getToken]);
+
+  return null;
 };
 
 export default SyncUser;

@@ -74,11 +74,11 @@ const IdeaDetails = () => {
   return (
     <div className='max-w-4xl mx-auto p-6'>
       <div className='flex justify-between'>
-        <Button onClick={() => navigate('/ideas')} className='mb-4'>
+        <Button onClick={() => navigate('/admin/user-ideas')} className='mb-4'>
           ← Back to Ideas
         </Button>
         {/* Show Approve Button for Mentors Only */}
-        {user?.unsafeMetadata?.role === 'mentor' && (
+        {user?.unsafeMetadata?.role === 'admin' && (
           <Button
             onClick={() => handleApprove(idea._id)}
             className='mt-3 bg-blue-500 text-white px-4 py-2 rounded'

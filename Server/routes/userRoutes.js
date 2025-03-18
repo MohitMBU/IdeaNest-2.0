@@ -1,36 +1,29 @@
 import express from 'express'
 import User from '../models/User.js'
 
+// import { requireAuth } from "../middleware/authMiddleware.js";
+
 const router = express.Router()
 
-router.post('/', async (req, res) => {
-  const { clerkId, name, email, role, avatar } = req.body
-
+router.post("/", async (req, res) => {
+  const { clerkId, name, email, role, avatar } = req.body;
   if (!clerkId || !email) {
-    return res.status(400).json({ message: 'clerkId and email are required' })
+    return res.status(400).json({ message: "clerkId and email are required" });
   }
 
   try {
-    let user = await User.findOne({ clerkId })
+    const user = await User.findOneAndUpdate(
+      { clerkId },
+      { name, email, role, avatar },
+      { new: true, upsert: true }
+    );
 
-    if (!user) {
-      console.log('🟡 Creating new user...')
-      user = await User.create({ clerkId, name, email, role, avatar })
-    } else {
-      console.log('🟡 Updating existing user...')
-      user.name = name
-      user.email = email
-      user.avatar = avatar
-      user.role = role
-      await user.save()
-    }
-
-    res.json(user)
+    res.json(user);
   } catch (error) {
-    console.error('❌ Error updating user:', error)
-    res.status(500).json({ message: 'Server error', error: error.message })
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
-})
+});
 
 router.get('/', async (req, res) => {
   try {
