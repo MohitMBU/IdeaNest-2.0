@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { Upload } from "lucide-react";
 
 const categories = [
-  { name: "Technology & Software", icon: "💻" },
-  { name: "Healthcare & Biotechnology", icon: "🏥" },
-  { name: "Aerospace & Defense", icon: "🚀" },
-  { name: "Environment & Sustainability", icon: "🌱" },
-  { name: "Infrastructure & Smart Cities", icon: "🏗️" },
-  { name: "Business & Finance", icon: "💰" },
-  { name: "Education & EdTech", icon: "📚" },
-  { name: "Media & Entertainment", icon: "🎨" },
-  { name: "Food & Agriculture", icon: "🌾" },
-  { name: "Automotive & Transportation", icon: "🚘" },
-  { name: "Retail & E-Commerce", icon: "🛍️" },
+  { name: "Technology & Software" },
+  { name: "Healthcare & Biotechnology" },
+  { name: "Aerospace & Defense" },
+  { name: "Environment & Sustainability" },
+  { name: "Infrastructure & Smart Cities" },
+  { name: "Business & Finance" },
+  { name: "Education & EdTech" },
+  { name: "Media & Entertainment" },
+  { name: "Food & Agriculture" },
+  { name: "Automotive & Transportation" },
+  { name: "Retail & E-Commerce" },
 ];
 
 const CreateIdea = () => {
@@ -66,12 +67,12 @@ const CreateIdea = () => {
     data.append("technology", formData.technology);
     data.append("referenceLinks", formData.referenceLinks);
     // ✅ Use Clerk user ID dynamically
-  if (user) {
-    data.append("userObject", user.id);
-  } else {
-    alert("User not authenticated. Please log in.");
-    return;
-  }
+    if (user) {
+      data.append("userObject", user.id);
+    } else {
+      alert("User not authenticated. Please log in.");
+      return;
+    }
 
     formData.media.forEach((file) => data.append("media", file));
 
@@ -84,7 +85,7 @@ const CreateIdea = () => {
       const result = await response.json();
       if (result.success) {
         alert("Idea submitted successfully!");
-        navigate('/ideas');
+        navigate("/ideas");
       } else {
         alert(`Error: ${result.message}`);
         console.error("Error details:", result.error);
@@ -96,95 +97,100 @@ const CreateIdea = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-xl"
-    >
-      <h2 className="text-2xl font-bold mb-4">Submit Your Idea</h2>
-
-      {/* Title */}
-      <input
-        type="text"
-        name="title"
-        placeholder="Title"
-        onChange={handleChange}
-        required
-        className="block w-full mb-3 p-3 border rounded-lg"
-      />
-
-      {/* Problem Statement */}
-      <textarea
-        name="description"
-        placeholder="Describe your idea.."
-        onChange={handleChange}
-        required
-        className="block w-full mb-3 p-3 border rounded-lg"
-      ></textarea>
-
-      {/* Description */}
-      <textarea
-        name="problemStatement"
-        placeholder="Problem Statement (What issue does it solve?)"
-        onChange={handleChange}
-        required
-        className="block w-full mb-3 p-3 border rounded-lg"
-      ></textarea>
-
-      {/* Category Selection */}
-      <h3 className="text-lg font-semibold mb-2">Select a Category:</h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-        {categories.map((category) => (
-          <button
-            type="button"
-            key={category.name}
-            onClick={() => handleCategorySelect(category.name)}
-            className={`p-4 rounded-lg border transition w-full ${
-              formData.category === category.name
-                ? "bg-blue-500 text-white"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            <span className="text-2xl">{category.icon}</span>
-            <p className="mt-2 font-semibold">{category.name}</p>
-          </button>
-        ))}
-      </div>
-
-      {/* Tech Stacks */}
-      <input
-        type="text"
-        name="technology"
-        placeholder="Technology (comma-separated)"
-        onChange={handleChange}
-        className="block w-full mb-3 p-3 border rounded-lg"
-      />
-
-            {/* Reference links */}
-            <input
-        type="text"
-        name="referenceLinks"
-        placeholder="Any reference links.."
-        onChange={handleChange}
-        className="block w-full mb-3 p-3 border rounded-lg"
-      />
-
-      {/* File Upload */}
-      <input
-        type="file"
-        name="media"
-        multiple
-        onChange={handleFileChange}
-        className="block w-full mb-3 p-3 border rounded-lg"
-      />
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold"
+    <>
+      <h2 className="text-2xl font-bold mb-4 md:mx-[10%] my-10">
+        Share Your Idea
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="p-10 md:mx-[10%] mx-auto rounded-2xl bg-amber-600/10 my-5"
       >
-        Submit Idea
-      </button>
-    </form>
+        <div className="lg:flex gap-4 w-full space-y-4">
+          {/* Left Section */}
+          <div className="space-y-4 flex-1">
+            <input
+              type="text"
+              name="title"
+              placeholder="Your project's name?"
+              onChange={handleChange}
+              required
+              className="block w-full p-3 border border-slate-500 rounded-lg"
+            />
+            <textarea
+              name="problemStatement"
+              placeholder="Problem Statement (What issue does it solve?)"
+              onChange={handleChange}
+              required
+              className="block w-full p-3 border border-slate-500 rounded-lg"
+            ></textarea>
+
+            <textarea
+              name="description"
+              placeholder="Describe your idea.."
+              onChange={handleChange}
+              required
+              className="block w-full p-3 border border-slate-500 rounded-lg"
+            ></textarea>
+          </div>
+
+          {/* Right Section */}
+          <div className="space-y-4 w-min">
+            <div className="relative w-48 h-48 border border-slate-500 rounded-lg flex items-center justify-center cursor-pointer hover:border-slate-500 transition-colors">
+              <div className="relative w-48 h-48 border border-slate-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-slate-500 transition-colors">
+                <input
+                  type="file"
+                  name="media"
+                  multiple
+                  onChange={handleFileChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+                <Upload className="w-12 h-12 text-black" />
+                <span className="mt-2 text-sm text-gray-700">Upload Image</span>
+              </div>
+            </div>
+            <input
+              type="text"
+              name="referenceLinks"
+              placeholder="Github Link?"
+              onChange={handleChange}
+              className="block w-full p-3 border border-slate-500 rounded-lg"
+            />
+          </div>
+        </div>
+
+        <h3 className="text-lg font-semibold mb-2 mt-6">Select a Category:</h3>
+        <div className="flex flex-wrap gap-4 mb-10">
+          {categories.map((category) => (
+            <button
+              type="button"
+              key={category.name}
+              onClick={() => handleCategorySelect(category.name)}
+              className={`px-4 py-2 rounded-full text-sm border border-slate-500 transition-colors flex items-center justify-center ${
+                formData.category === category.name
+                  ? "bg-yellow-500 text-white"
+                  : "hover:bg-yellow-500/50"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+
+        <input
+          type="text"
+          name="technology"
+          placeholder="Technology (comma-separated)  eg: React, javaScript, Python"
+          onChange={handleChange}
+          className="block w-full p-3 border border-slate-500 rounded-lg mb-4"
+        />
+        <button
+          type="submit"
+          className="mt-3 bg-yellow-300 hover:bg-yellow-400 text-black p-3 px-5 border border-slate-500 rounded-full font-semibold"
+        >
+          Submit Idea
+        </button>
+      </form>
+    </>
   );
 };
 
