@@ -181,16 +181,17 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
         </figure>
       )}
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex justify-between lg:flex-row flex-col space-y-6">
         {/* Left Section: All Project Details */}
         <div className="space-y-5">
-          <h3 className="text-xl font-semibold mb-6 flex-1">Project Details</h3>
-          <p className="text-gray-600 mt-2">
-            <b>Category:</b> <br /> {project.category || "N/A"}
-          </p>
-          <p className="text-gray-600 mt-2 ">
-            <b>Feasibility Score:</b> <br /> {project.feasibilityScore}
-          </p>
+          <div className="flex gap-4">
+            <p className="text-black mt-2 border border-green-700 bg-green-200 w-fit px-3 py-1 rounded-full">
+              {project.category || "N/A"}
+            </p>
+            <p className="text-black mt-2 border border-yellow-700 bg-yellow-200 w-fit px-3 py-1 rounded-full">
+              Feasibility: {project.feasibilityScore}
+            </p>
+          </div>
           <p className="text-gray-600 mt-2">
             <b>Description:</b> <br /> {project.description}
           </p>
@@ -201,7 +202,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
                 {technologyItems.map((tech, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-300 rounded-full rounded"
+                    className="px-2 py-1 bg-gray-300 rounded-full"
                   >
                     {tech}
                   </span>
@@ -212,7 +213,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
         </div>
 
         {/* Right Section: Repository Details */}
-        <div className="border border-gray-300 bg-white p-5 pb-8 rounded-2xl md:max-w-[380px] overflow-hidden">
+        <div className="border border-gray-300 bg-white p-5 pb-8 rounded-2xl md:min-w-[380px] overflow-hidden h-fit">
           <h3 className="text-lg font-semibold mb-2">Repository:</h3>
           {Array.isArray(project.referenceLinks) &&
           project.referenceLinks.length > 0 ? (
