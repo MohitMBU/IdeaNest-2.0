@@ -114,9 +114,22 @@ function Users() {
                       <h3 className="text-xl font-semibold text-yellow-600">
                         {user.name}
                       </h3>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full shadow-md bg-yellow-500 text-white">
-                        {user.role}
-                      </span>
+                      <span
+                            className={`
+    px-3 py-1 text-xs font-semibold rounded-full shadow-md text-white
+    ${
+      user.role === 'admin'
+        ? 'bg-red-500'
+        : user.role === 'student'
+        ? 'bg-blue-500'
+        : user.role === 'mentor'
+        ? 'bg-green-500'
+        : 'bg-gray-500'
+    }
+  `}
+                          >
+                            {user.role}
+                          </span>
                     </div>
                     <p className="text-gray-600">{user.email}</p>
                   </div>

@@ -26,6 +26,7 @@ import Unauthorized from "./components/Unauthorized";
 import Users from "./pages/admin/Users";
 import Main from "./pages/AI-Mentor/components/Main/Main";
 import ChatBot from "./pages/AI-Mentor/ChatBot";
+import Leaderboard from "./pages/Leaderboard";
 
 const router = createBrowserRouter([
   {
@@ -137,6 +138,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <SearchPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/leaderboard",
+        element: (
+          <ProtectedRoute>
+            <Leaderboard />
           </ProtectedRoute>
         ),
       },

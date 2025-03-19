@@ -203,7 +203,7 @@ export default function Home () {
           <p className="text-center">Loading ideas...</p>
         ) : (
           <Section
-            title="Approved Ideas"
+            title="Ideas"
             items={ideas}
             CardComponent={IconCard}
             seeAllLink="/ideas"
