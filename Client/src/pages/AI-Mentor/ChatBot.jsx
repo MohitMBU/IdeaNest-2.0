@@ -176,7 +176,7 @@ const ChatBot = () => {
           height: dimensions.height,
         }}
       >
-        <div className="bg-primary rounded-3xl w-full h-full txt flex flex-col overflow-hidden relative shadow-2xl shadow-purple-800/50">
+        <div className="bg-primary rounded-3xl w-full h-full txt flex flex-col overflow-hidden relative shadow-2xl shadow-yellow-800/50">
           {/* Resizer handle using the Spline icon */}
           <div
             onMouseDown={handleMouseDown}

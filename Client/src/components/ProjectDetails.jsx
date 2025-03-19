@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Check, Star, GitFork, Eye } from "lucide-react";
 
 const ProjectDetails = ({ projectId: propProjectId }) => {
   const { id: routeId } = useParams();
@@ -9,9 +10,9 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [mediaIndex, setMediaIndex] = useState(0);
   const [githubRepoData, setGithubRepoData] = useState(null);
   const [contributors, setContributors] = useState([]);
+  const [commitCount, setCommitCount] = useState(null);
 
   const parseGithubUrl = (url) => {
     const regex = /github\.com\/([^\/]+)\/([^\/]+)(?:\/|$)/;
@@ -63,12 +64,14 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
           if (parsed) {
             const { owner, repo } = parsed;
             try {
+              // Fetch repository data
               const repoResponse = await fetch(
                 `https://api.github.com/repos/${owner}/${repo}`
               );
               const repoData = await repoResponse.json();
               setGithubRepoData(repoData);
 
+              // Fetch contributors
               const contributorsResponse = await fetch(
                 `https://api.github.com/repos/${owner}/${repo}/contributors`
               );
@@ -76,6 +79,23 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
               setContributors(
                 Array.isArray(contributorsData) ? contributorsData : []
               );
+
+              // Fetch commit count by requesting 1 commit per page and reading the Link header
+              const commitsResponse = await fetch(
+                `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`
+              );
+              const linkHeader = commitsResponse.headers.get("Link");
+              if (linkHeader) {
+                const lastPageMatch = linkHeader.match(
+                  /page=(\d+)>; rel="last"/
+                );
+                if (lastPageMatch) {
+                  setCommitCount(parseInt(lastPageMatch[1]));
+                }
+              } else {
+                const commitsData = await commitsResponse.json();
+                setCommitCount(commitsData.length);
+              }
             } catch (error) {
               console.error("Error fetching GitHub data:", error);
             }
@@ -94,17 +114,27 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
     return "unknown";
   };
 
-  const nextMedia = () => {
-    setMediaIndex((prev) => (prev + 1) % project.media.length);
-  };
+  // Process technology field: split by commas if it's a string.
+  const technologyItems =
+    typeof project?.technology === "string"
+      ? project.technology
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : Array.isArray(project?.technology)
+      ? project.technology
+      : [];
 
-  const prevMedia = () => {
-    setMediaIndex(
-      (prev) => (prev - 1 + project.media.length) % project.media.length
-    );
-  };
+  // Process techStacks field if available.
+  const techStacks =
+    typeof project?.techStacks === "string"
+      ? project.techStacks
+      : Array.isArray(project?.techStacks)
+      ? project.techStacks.join(", ")
+      : "";
 
-  const currentMedia = project?.media?.[mediaIndex] || "";
+  // Use the first media item for the figure.
+  const media = project?.media?.[0] || "";
 
   if (loading) return <p className="text-center">Loading project...</p>;
 
@@ -120,151 +150,122 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex justify-between">
-        <Button onClick={() => navigate("/projects")} className="mb-4">
-          ← Back to Projects
-        </Button>
-      </div>
-
-      <h2 className="text-3xl font-bold">{project.title}</h2>
-      <p className="text-gray-600 mt-2">{project.description}</p>
-
-      {/* Media Display */}
-      {project.media?.length > 0 && (
-        <div className="relative w-full h-72 mt-4 bg-gray-200 flex items-center justify-center">
-          {getFileType(currentMedia) === "image" && (
-            <img
-              src={currentMedia}
-              alt="Project Media"
-              className="w-full h-72 object-cover"
-            />
-          )}
-          {getFileType(currentMedia) === "video" && (
-            <video controls className="w-full h-72 object-cover">
-              <source src={currentMedia} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          )}
-          {getFileType(currentMedia) === "pdf" && (
-            <a
-              href={currentMedia}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 font-bold underline"
-            >
-              View PDF
-            </a>
-          )}
-
-          {/* Navigation Arrows */}
-          {project.media.length > 1 && (
-            <>
-              <button
-                className="absolute left-2 bg-gray-800 text-white p-2 rounded-full"
-                onClick={prevMedia}
-              >
-                ◀
-              </button>
-              <button
-                className="absolute right-2 bg-gray-800 text-white p-2 rounded-full"
-                onClick={nextMedia}
-              >
-                ▶
-              </button>
-            </>
+    <div className="md:mx-[10%] mx-auto p-6">
+      <header className="flex items-center justify-between border-b pb-4">
+        <div className="flex items-center gap-6">
+          <span className="text-5xl">{project.icon || "📁"}</span>
+          <div>
+            <span className="text-2xl font-bold">{project.title}</span>
+            <p className="text-sm text-gray-500">
+              {new Date(project.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+        <div>
+          {project.approved && (
+            <div className="flex items-center bg-green-600 text-white px-3 py-2 rounded-full">
+              <Check className="w-6 h-6" />
+              approved
+            </div>
           )}
         </div>
+      </header>
+
+      {project.media?.length > 0 && getFileType(media) === "image" && (
+        <figure className="relative aspect-video mx-24 my-10 bg-gray-200">
+          <img
+            src={media}
+            alt="Project media"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </figure>
       )}
 
-      {/* Project Details Section */}
-      <div className="p-5">
-        <h3 className="text-xl font-semibold text-gray-800">Project Details</h3>
-        <p className="text-gray-600 mt-2">
-          <b>ID:</b> {project._id}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Title:</b> {project.title}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Description:</b> {project.description}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Category:</b> {project.category || "N/A"}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Tech Stacks:</b>{" "}
-          {Array.isArray(project.techStacks)
-            ? project.techStacks.join(", ")
-            : project.techStacks}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Feasibility Score:</b> {project.feasibilityScore}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Approved:</b> {project.approved ? "Yes" : "No"}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Star Count:</b> {project.starCount}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Technology:</b>{" "}
-          {Array.isArray(project.technology)
-            ? project.technology.join(", ")
-            : project.technology}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Reference Links:</b>{" "}
+      <div className="mt-6 flex justify-between">
+        {/* Left Section: All Project Details */}
+        <div className="space-y-5">
+          <h3 className="text-xl font-semibold mb-6 flex-1">Project Details</h3>
+          <p className="text-gray-600 mt-2">
+            <b>Category:</b> <br /> {project.category || "N/A"}
+          </p>
+          <p className="text-gray-600 mt-2 ">
+            <b>Feasibility Score:</b> <br /> {project.feasibilityScore}
+          </p>
+          <p className="text-gray-600 mt-2">
+            <b>Description:</b> <br /> {project.description}
+          </p>
+          {technologyItems.length > 0 && (
+            <div className="">
+              <h3 className="text-lg font-semibold">Tech stacks:</h3>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {technologyItems.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-gray-300 rounded-full rounded"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Section: Repository Details */}
+        <div className="border border-gray-300 bg-white p-5 pb-8 rounded-2xl md:max-w-[380px] overflow-hidden">
+          <h3 className="text-lg font-semibold mb-2">Repository:</h3>
           {Array.isArray(project.referenceLinks) &&
-          project.referenceLinks.length > 0
-            ? project.referenceLinks.join(", ")
-            : "None"}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Created At:</b> {new Date(project.createdAt).toLocaleString()}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>Updated At:</b> {new Date(project.updatedAt).toLocaleString()}
-        </p>
-        <p className="text-gray-600 mt-2">
-          <b>User Object:</b> {project.userObject}
-        </p>
-      </div>
+          project.referenceLinks.length > 0 ? (
+            <p className="text-blue-500 underline truncate">
+              <a
+                href={project.referenceLinks.find((link) =>
+                  link.includes("github.com")
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {project.referenceLinks.find((link) =>
+                  link.includes("github.com")
+                )}
+              </a>
+            </p>
+          ) : (
+            <p>No repository link available</p>
+          )}
+          {githubRepoData && (
+            <div className="mt-4 space-y-2.5">
+              <p className="text-gray-900 mt-1 flex gap-2">
+                <Star /> <p className="font-semibold">Stars:</p>{" "}
+                {githubRepoData.stargazers_count}
+              </p>
+              <p className="text-gray-900 mt-1 flex gap-2">
+                <GitFork />
+                <p className="font-semibold">Forks:</p>{" "}
+                {githubRepoData.forks_count}
+              </p>
+              <p className="text-gray-900 mt-1 flex gap-2">
+                <Eye />
+                <p className="font-semibold">Watchers:</p>{" "}
+                {githubRepoData.watchers_count}
+              </p>
+              <p className="text-gray-900 mt-1  flex gap-2">
+                <b className="font-semibold">Total Contributors:</b>{" "}
+                {contributors.length}
+              </p>
 
-      {/* GitHub Repository Details */}
-      {githubRepoData && (
-        <div className="p-5 mt-6 bg-gray-50 border border-gray-200 rounded">
-          <h3 className="text-xl font-semibold text-gray-800">
-            GitHub Repository Details
-          </h3>
-          <p className="text-gray-600 mt-2">
-            <b>Repository:</b>{" "}
-            <a
-              href={githubRepoData.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline"
-            >
-              {githubRepoData.full_name}
-            </a>
-          </p>
-          <p className="text-gray-600 mt-2">
-            <b>Description:</b> {githubRepoData.description}
-          </p>
-          <p className="text-gray-600 mt-2">
-            <b>Stars:</b> {githubRepoData.stargazers_count}
-          </p>
-          <p className="text-gray-600 mt-2">
-            <b>Forks:</b> {githubRepoData.forks_count}
-          </p>
-          <p className="text-gray-600 mt-2">
-            <b>Open Issues:</b> {githubRepoData.open_issues_count}
-          </p>
-          <p className="text-gray-600 mt-2">
-            <b>Total Contributors:</b> {contributors.length}
-          </p>
+              {commitCount !== null && (
+                <p className="text-gray-900 mt-1 flex gap-2">
+                  <p className="font-semibold">Total Commits:</p> {commitCount}
+                </p>
+              )}
+              <p className="text-gray-900 mt-1 flex gap-2">
+                <p className="font-semibold">Repo Created:</p>{" "}
+                {new Date(githubRepoData.created_at).toLocaleDateString()}
+              </p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

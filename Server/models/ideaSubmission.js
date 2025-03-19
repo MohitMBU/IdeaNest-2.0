@@ -8,7 +8,6 @@ const IdeaSchema = new mongoose.Schema(
     problemStatement: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    starCount: { type: Number, default: 0 },
     technology: { type: [String]}, // Array of technologies
     referenceLinks: {
       type: [String],

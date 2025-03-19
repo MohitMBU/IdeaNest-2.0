@@ -1,6 +1,6 @@
 import React from "react";
 
-function IconCard({ icon, name, category, techStack }) {
+function IconCard({ icon, name, category, techStack="" }) {
   const techItems = techStack
     .split(",")
     .map((item) => item.trim())

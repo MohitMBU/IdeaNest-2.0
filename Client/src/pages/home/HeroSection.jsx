@@ -9,26 +9,26 @@ const slides = [
     subtitle:
       "Join the revolution. Build, innovate, and collaborate with the best minds!",
     cta: "Register Now",
-    bg: "bg-yellow-400",
+    bgImage: "/posterBackground/welcome.jpg", // Replace with your image path
   },
   {
     title: "🔥 Trending Features",
     subtitle:
       "AI-powered coding assistance, live debugging, and real-time collaboration!",
     cta: "Explore Features",
-    bg: "bg-yellow-500",
+    bgImage: "/posterBackground/trendingFeatures.jpg",
   },
   {
     title: "📢 Announcements",
     subtitle: "New prize categories added! Check out the latest updates.",
     cta: "View Details",
-    bg: "bg-blue-900",
+    bgImage: "/posterBackground/announcements.jpg",
   },
   {
     title: "👤 Complete Your Profile!",
     subtitle: "Get better team recommendations & exclusive perks!",
     cta: "Update Profile",
-    bg: "bg-purple-900",
+    bgImage: "/posterBackground/completeProfile.jpg",
   },
 ];
 
@@ -81,7 +81,12 @@ export default function HeroSection() {
           animate="center"
           exit="exit"
           transition={{ duration: 0.5 }}
-          className={`absolute w-full h-full flex flex-col items-center justify-center text-center p-10 ${slides[current].bg} text-white rounded-2xl shadow-lg`}
+          style={{
+            backgroundImage: `url(${slides[current].bgImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+          className="absolute w-full h-full flex flex-col items-center justify-center text-center p-10 text-white rounded-2xl shadow-lg"
         >
           <h1 className="text-4xl font-bold">{slides[current].title}</h1>
           <p className="text-lg mt-2">{slides[current].subtitle}</p>
