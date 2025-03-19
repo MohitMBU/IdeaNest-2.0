@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Check, Star, GitFork, Eye } from "lucide-react";
 
@@ -7,12 +8,14 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
   const { id: routeId } = useParams();
   const projectId = propProjectId || routeId;
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [githubRepoData, setGithubRepoData] = useState(null);
   const [contributors, setContributors] = useState([]);
   const [commitCount, setCommitCount] = useState(null);
+  const [donationAmount, setDonationAmount] = useState("");
 
   const parseGithubUrl = (url) => {
     const regex = /github\.com\/([^\/]+)\/([^\/]+)(?:\/|$)/;
@@ -35,6 +38,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
           `http://localhost:3000/api/projects/${projectId}`
         );
         const data = await response.json();
+        console.log("Fetched project data:", data);
         if (data.success && data.project) {
           setProject(data.project);
         } else {
@@ -69,6 +73,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
                 `https://api.github.com/repos/${owner}/${repo}`
               );
               const repoData = await repoResponse.json();
+              console.log("GitHub repo data:", repoData);
               setGithubRepoData(repoData);
 
               // Fetch contributors
@@ -76,6 +81,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
                 `https://api.github.com/repos/${owner}/${repo}/contributors`
               );
               const contributorsData = await contributorsResponse.json();
+              console.log("GitHub contributors data:", contributorsData);
               setContributors(
                 Array.isArray(contributorsData) ? contributorsData : []
               );
@@ -85,16 +91,19 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
                 `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`
               );
               const linkHeader = commitsResponse.headers.get("Link");
+              console.log("Commits Link header:", linkHeader);
               if (linkHeader) {
                 const lastPageMatch = linkHeader.match(
                   /page=(\d+)>; rel="last"/
                 );
                 if (lastPageMatch) {
                   setCommitCount(parseInt(lastPageMatch[1]));
+                  console.log("Total commits (from header):", lastPageMatch[1]);
                 }
               } else {
                 const commitsData = await commitsResponse.json();
                 setCommitCount(commitsData.length);
+                console.log("Total commits (from data length):", commitsData.length);
               }
             } catch (error) {
               console.error("Error fetching GitHub data:", error);
@@ -125,16 +134,55 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
       ? project.technology
       : [];
 
-  // Process techStacks field if available.
-  const techStacks =
-    typeof project?.techStacks === "string"
-      ? project.techStacks
-      : Array.isArray(project?.techStacks)
-      ? project.techStacks.join(", ")
-      : "";
-
   // Use the first media item for the figure.
   const media = project?.media?.[0] || "";
+
+  const handleDonate = async () => {
+    const amount = parseFloat(donationAmount);
+    console.log("Attempting donation with amount:", donationAmount, "Parsed:", amount);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Please enter a valid donation amount.");
+      return;
+    }
+    // Ensure the user is logged in
+    if (!user) {
+      alert("User not authenticated. Please log in.");
+      return;
+    }
+    try {
+      const userId = user.id;
+      console.log("Sending donation for project:", project._id, "User:", userId);
+      // Updated URL: make sure your server mounts the route under /api/projects
+      const response = await fetch(`http://localhost:3000/api/projects/${project._id}/fund`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, amount }),
+      });
+      const text = await response.text();
+      console.log("Raw donation response text:", text);
+      try {
+        const data = JSON.parse(text);
+        console.log("Donation response parsed JSON:", data);
+        if (data.success) {
+          alert("Donation successful!");
+          // Update the current funding value locally
+          setProject({
+            ...project,
+            currentFunding: project.currentFunding + amount,
+          });
+          setDonationAmount("");
+        } else {
+          alert("Donation failed: " + data.message);
+        }
+      } catch (jsonError) {
+        console.error("Error parsing donation response JSON:", jsonError);
+        alert("Donation failed: Unable to parse server response.");
+      }
+    } catch (error) {
+      console.error("Error donating:", error);
+      alert("An error occurred while processing your donation.");
+    }
+  };
 
   if (loading) return <p className="text-center">Loading project...</p>;
 
@@ -182,7 +230,7 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
       )}
 
       <div className="mt-6 flex justify-between lg:flex-row flex-col space-y-6">
-        {/* Left Section: All Project Details */}
+        {/* Left Section: Project Details */}
         <div className="space-y-5">
           <div className="flex gap-4">
             <p className="text-black mt-2 border border-green-700 bg-green-200 w-fit px-3 py-1 rounded-full">
@@ -200,34 +248,54 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
               <h3 className="text-lg font-semibold">Tech stacks:</h3>
               <div className="flex flex-wrap gap-2 mt-2">
                 {technologyItems.map((tech, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-gray-300 rounded-full"
-                  >
+                  <span key={index} className="px-2 py-1 bg-gray-300 rounded-full">
                     {tech}
                   </span>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Funding Section */}
+          <div className="mt-8 border-t pt-4">
+            <h3 className="text-xl font-semibold mb-2">Funding</h3>
+            <div className="mb-4">
+              <p>
+                Current Funding: ${project.currentFunding} / ${project.fundingGoal}
+              </p>
+              <progress
+                className="w-full"
+                value={project.currentFunding}
+                max={project.fundingGoal}
+              ></progress>
+            </div>
+            <div className="flex gap-4">
+              <input
+                type="number"
+                value={donationAmount}
+                onChange={(e) => {
+                  console.log("Donation amount changed to:", e.target.value);
+                  setDonationAmount(e.target.value);
+                }}
+                placeholder="Enter donation amount"
+                className="border border-gray-300 rounded p-2 w-40"
+              />
+              <Button onClick={handleDonate}>Donate</Button>
+            </div>
+          </div>
         </div>
 
         {/* Right Section: Repository Details */}
         <div className="border border-gray-300 bg-white p-5 pb-8 rounded-2xl md:min-w-[380px] overflow-hidden h-fit">
           <h3 className="text-lg font-semibold mb-2">Repository:</h3>
-          {Array.isArray(project.referenceLinks) &&
-          project.referenceLinks.length > 0 ? (
+          {Array.isArray(project.referenceLinks) && project.referenceLinks.length > 0 ? (
             <p className="text-blue-500 underline truncate">
               <a
-                href={project.referenceLinks.find((link) =>
-                  link.includes("github.com")
-                )}
+                href={project.referenceLinks.find((link) => link.includes("github.com"))}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {project.referenceLinks.find((link) =>
-                  link.includes("github.com")
-                )}
+                {project.referenceLinks.find((link) => link.includes("github.com"))}
               </a>
             </p>
           ) : (
@@ -236,32 +304,24 @@ const ProjectDetails = ({ projectId: propProjectId }) => {
           {githubRepoData && (
             <div className="mt-4 space-y-2.5">
               <p className="text-gray-900 mt-1 flex gap-2">
-                <Star /> <p className="font-semibold">Stars:</p>{" "}
-                {githubRepoData.stargazers_count}
+                <Star /> <span className="font-semibold">Stars:</span> {githubRepoData.stargazers_count}
               </p>
               <p className="text-gray-900 mt-1 flex gap-2">
-                <GitFork />
-                <p className="font-semibold">Forks:</p>{" "}
-                {githubRepoData.forks_count}
+                <GitFork /> <span className="font-semibold">Forks:</span> {githubRepoData.forks_count}
               </p>
               <p className="text-gray-900 mt-1 flex gap-2">
-                <Eye />
-                <p className="font-semibold">Watchers:</p>{" "}
-                {githubRepoData.watchers_count}
+                <Eye /> <span className="font-semibold">Watchers:</span> {githubRepoData.watchers_count}
               </p>
-              <p className="text-gray-900 mt-1  flex gap-2">
-                <b className="font-semibold">Total Contributors:</b>{" "}
-                {contributors.length}
+              <p className="text-gray-900 mt-1 flex gap-2">
+                <span className="font-semibold">Total Contributors:</span> {contributors.length}
               </p>
-
               {commitCount !== null && (
                 <p className="text-gray-900 mt-1 flex gap-2">
-                  <p className="font-semibold">Total Commits:</p> {commitCount}
+                  <span className="font-semibold">Total Commits:</span> {commitCount}
                 </p>
               )}
               <p className="text-gray-900 mt-1 flex gap-2">
-                <p className="font-semibold">Repo Created:</p>{" "}
-                {new Date(githubRepoData.created_at).toLocaleDateString()}
+                <span className="font-semibold">Repo Created:</span> {new Date(githubRepoData.created_at).toLocaleDateString()}
               </p>
             </div>
           )}

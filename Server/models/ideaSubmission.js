@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import validator from "validator"; 
+import validator from "validator";
 
 const IdeaSchema = new mongoose.Schema(
   {
@@ -8,12 +8,12 @@ const IdeaSchema = new mongoose.Schema(
     problemStatement: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    technology: { type: [String]}, // Array of technologies
+    technology: { type: [String] }, // Array of technologies
     referenceLinks: {
       type: [String],
       validate: {
         validator: function (links) {
-          return links.every(link => /^https?:\/\/.+$/.test(link)); // Checks if each link is a valid URL
+          return links.every(link => /^https?:\/\/.+$/.test(link));
         },
         message: "One or more reference links are invalid URLs."
       }
@@ -21,9 +21,13 @@ const IdeaSchema = new mongoose.Schema(
     approved: { type: Boolean, default: false },
     feasibilityScore: { type: String, enum: ["Low", "Medium", "High"], default: "Medium" },
     aiSuggestions: { type: String },
-    userObject: { type: String, required: true }, 
+    userObject: { type: String, required: true },
+    
+    // Crowdfunding fields
+    fundingGoal: { type: Number, default: 100 },
+    currentFunding: { type: Number, default: 0 }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Idea", IdeaSchema);
+export default mongoose.models.Idea || mongoose.model("Idea", IdeaSchema);

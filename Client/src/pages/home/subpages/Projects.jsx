@@ -62,7 +62,7 @@ const Projects = () => {
                   className='w-16 h-16 object-cover rounded-full'
                 />
               ) : (
-                '🚀'
+                '📁'
               ),
               name: project.title,
               techStack: Array.isArray(project.techStacks)

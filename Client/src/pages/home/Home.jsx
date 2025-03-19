@@ -104,7 +104,7 @@ export default function Home () {
           // Format each project with only the required fields and ensure techStack is a string
           const formattedProjects = data.projects.map(project => ({
             id: project._id,
-            icon: project.icon || '🚀',
+            icon: project.icon || '📁',
             name: project.title,
             techStack: Array.isArray(project.techStacks)
               ? project.techStacks.join(', ')
